@@ -3,7 +3,9 @@ var Engine = Matter.Engine,
     Render = Matter.Render,
     Runner = Matter.Runner,
     Bodies = Matter.Bodies,
-    Composite = Matter.Composite;
+    Composite = Matter.Composite,
+    Mouse = Matter.Mouse,
+    MouseConstraint = Matter.MouseConstraint;
 
 // create an engine
 var engine = Engine.create();
@@ -14,13 +16,71 @@ var render = Render.create({
     engine: engine
 });
 
-// create two boxes and a ground
-var boxA = Bodies.rectangle(400, 200, 90, 80);
-var boxB = Bodies.rectangle(450, 50, 80, 80);
+// create an array to store all bodies
+var bodies = [];
+
+// create a ground
 var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
 
-// add all of the bodies to the world
-Composite.add(engine.world, [boxA, boxB, ground]);
+// add the ground to the world
+Composite.add(engine.world, ground);
+
+// create a mouse constraint
+var mouse = Mouse.create(render.canvas);
+var mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse
+});
+
+// add the mouse constraint to the world
+Composite.add(engine.world, mouseConstraint);
+
+// initialize shapeIndex to 0 (rectangle)
+var shapeIndex = 0;
+
+// listen for keydown events
+document.addEventListener("keydown", function (event) {
+    switch (event.key) {
+        case '1':
+            shapeIndex = 0; // rectangle
+            break;
+        case '2':
+            shapeIndex = 1; // circle
+            break;
+        case '3':
+            shapeIndex = 2; // other shape (you can add more cases)
+            break;
+        default:
+            // Handle other keys (if needed)
+            break;
+    }
+});
+
+// listen for right-click events
+render.canvas.addEventListener('contextmenu', function (event) {
+    event.preventDefault(); // prevent default context menu
+
+    // Create different types of bodies based on shapeIndex
+    var newBody;
+    switch (shapeIndex) {
+        case 0:
+            newBody = Bodies.rectangle(mouse.position.x, mouse.position.y, 80, 80);
+            break;
+        case 1:
+            newBody = Bodies.circle(mouse.position.x, mouse.position.y, 40);
+            break;
+        case 2:
+            newBody = Bodies.trapezoid(mouse.position.x, mouse.position.y, 80, 80, 1);
+            break;
+        default:
+            // Handle other cases (if needed)
+            break;
+    }
+
+    if (newBody) {
+        bodies.push(newBody); // add to the bodies array
+        Composite.add(engine.world, newBody); // add to the world
+    }
+});
 
 // run the renderer
 Render.run(render);
