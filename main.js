@@ -47,10 +47,9 @@ document.addEventListener("keydown", function (event) {
             shapeIndex = 1; // circle
             break;
         case '3':
-            shapeIndex = 2; // other shape (you can add more cases)
+            shapeIndex = 2; // other shape
             break;
         default:
-            // Handle other keys (if needed)
             break;
     }
 });
@@ -70,7 +69,7 @@ render.canvas.addEventListener('contextmenu', function (event) {
             break;
         case 2:
             newBody = Bodies.trapezoid(mouse.position.x, mouse.position.y, 80, 80, 1);
-            break;
+            break;  
         default:
             // Handle other cases (if needed)
             break;
