@@ -42,12 +42,15 @@ document.addEventListener("keydown", function (event) {
     switch (event.key) {
         case '1':
             shapeIndex = 0; // rectangle
+            alert("rectangle");
             break;
         case '2':
             shapeIndex = 1; // circle
+            alert("circle");
             break;
         case '3':
             shapeIndex = 2; // other shape
+            alert("triangle");
             break;
         default:
             break;
