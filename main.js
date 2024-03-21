@@ -46,7 +46,8 @@ var runner = Runner.create();
 Runner.run(runner, engine);
 
 // create a player
-var player = Bodies.rectangle(200, 200, 50, 50);
+let playerspawning = 500;
+var player = Bodies.rectangle(200, playerspawning, 50, 50, { inertia: 0 });
 player.friction = 100;
 
 // add the player to the world
@@ -77,20 +78,8 @@ document.addEventListener("keydown", function(event) {
 
 setInterval(() => {
     updateCamera();
-    player.angle = 0;
-
-    checkScore();
+    player.inertia = Infinity;
 }, 10);
-
-let score = 0;
-let scorealt = player.position.y + 100;
-function checkScore() {
-    if (player.position.y >= scorealt) {
-        score++;
-        alert("score: " + score);
-    }
-    alert("check");
-}
 
 setInterval(() => {
     createPlatform(player.position.x);
@@ -111,8 +100,8 @@ function getRandomX(min, max) {
 
 // Function to create a platform
 function createPlatform(playerX) {
-    const platformWidth = 100; // Adjust as needed
-    const platformHeight = 10; // Adjust as needed
+    const platformWidth = 100;
+    const platformHeight = 10; 
 
     const platformX = getRandomX(10, 800); // Random x position around the player
     const platformY = player.position.y - 250; // 100 units above the player
