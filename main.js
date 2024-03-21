@@ -47,27 +47,29 @@ Runner.run(runner, engine);
 
 // create a player
 var player = Bodies.rectangle(200, 200, 50, 50);
+player.friction = 100;
 
 // add the player to the world
 Composite.add(engine.world, player);
 
 // add keyboard event listener for player movement
+let movementspeed = 7;
 document.addEventListener("keydown", function(event) {
     switch (event.code) {
         case 'ArrowUp':
-            Matter.Body.setVelocity(player, {x: player.velocity.x, y: -10});
+            Matter.Body.setVelocity(player, {x: player.velocity.x, y: -movementspeed});
             updateCamera();
             break;
         case 'ArrowDown':
-            Matter.Body.setVelocity(player, {x: player.velocity.x, y: 10});
+            Matter.Body.setVelocity(player, {x: player.velocity.x, y: movementspeed});
             updateCamera();
             break;
         case 'ArrowLeft':
-            Matter.Body.setVelocity(player, {x: -10, y: player.velocity.y});
+            Matter.Body.setVelocity(player, {x: -movementspeed, y: player.velocity.y});
             updateCamera();
             break;
         case 'ArrowRight':
-            Matter.Body.setVelocity(player, {x: 10, y: player.velocity.y});
+            Matter.Body.setVelocity(player, {x: movementspeed, y: player.velocity.y});
             updateCamera();
             break;
     }
@@ -76,10 +78,46 @@ document.addEventListener("keydown", function(event) {
 setInterval(() => {
     updateCamera();
     player.angle = 0;
+
+    checkScore();
 }, 10);
+
+let score = 0;
+let scorealt = player.position.y + 100;
+function checkScore() {
+    if (player.position.y >= scorealt) {
+        score++;
+        alert("score: " + score);
+    }
+    alert("check");
+}
+
+setInterval(() => {
+    createPlatform(player.position.x);
+}, 2500);
+
+window.onload = createPlatform(player.position.x);
 
 function updateCamera() {
     let translate = {x : 250, y : 250};
     Render.lookAt(render, player, translate);
     Bounds.translate(render.bounds, translate);
+}
+
+// Function to generate a random x position
+function getRandomX(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Function to create a platform
+function createPlatform(playerX) {
+    const platformWidth = 100; // Adjust as needed
+    const platformHeight = 10; // Adjust as needed
+
+    const platformX = getRandomX(10, 800); // Random x position around the player
+    const platformY = player.position.y - 250; // 100 units above the player
+
+    const platform = Bodies.rectangle(platformX, platformY, platformWidth, platformHeight, { isStatic: true });
+    bodies.push(platform);
+    Composite.add(engine.world, platform);
 }
